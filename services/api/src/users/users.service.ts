@@ -7,22 +7,22 @@ import { PrismaService } from '../prisma/prisma.service';
 export class UsersService {
   constructor(private readonly prisma: PrismaService) {}
   create(createUserInput: CreateUserInput) {
-    return this.prisma.user.create({ data: createUserInput });
+    return this.prisma.users.create({ data: createUserInput });
   }
 
   findAll() {
-    return this.prisma.user.findMany();
+    return this.prisma.users.findMany();
   }
 
   findOne(id: number) {
-    return this.prisma.user.findFirstOrThrow({ where: { id } });
+    return this.prisma.users.findFirstOrThrow({ where: { id } });
   }
 
   update(id: number, updateUserInput: UpdateUserInput) {
-    return this.prisma.user.update({ where: { id }, data: updateUserInput });
+    return this.prisma.users.update({ where: { id }, data: updateUserInput });
   }
 
   remove(id: number) {
-    return this.prisma.user.delete({ where: { id } });
+    return this.prisma.users.delete({ where: { id } });
   }
 }
