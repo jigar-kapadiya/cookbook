@@ -1,0 +1,64 @@
+# node deps (we’ll reinstall fresh in the image)
+node_modules
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# build output
+dist
+build
+coverage
+
+# environment files
+.env
+.env.*.local
+.env.local
+
+# logs
+logs
+*.log
+
+# git metadata
+.git
+.gitignore
+
+# IDE/editor metadata
+.vscode
+.idea
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Docker files
+docker-compose*.yml
+.dockerignore
+
+# npm cache
+.npm/
+
+# TypeScript build cache
+*.tsbuildinfo
+
+.env
+.env.development.local
+.env.test.local
+.env.production.local
+.env.local
+
+# temp directory
+.temp
+.tmp
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Diagnostic reports (https://nodejs.org/api/report.html)
+report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+
+/generated/prisma
+
+/generated/prisma
