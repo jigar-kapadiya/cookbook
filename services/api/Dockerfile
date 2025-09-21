@@ -2,8 +2,6 @@
 FROM node:22-slim AS builder
 WORKDIR /app
 
-# RUN apt-get update -y && apt-get install -y openssl
-
 COPY package*.json ./
 RUN npm ci
 
@@ -11,7 +9,7 @@ RUN npm ci
 COPY prisma ./prisma
 RUN npx prisma generate
 
-# Compile Nest
+# BUILD
 COPY tsconfig*.json ./
 COPY src ./src
 RUN npm run build
