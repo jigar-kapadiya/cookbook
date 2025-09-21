@@ -46,7 +46,6 @@ export class UsersService {
   }
 
   async login(email: string, password: string) {
-    console.log(process.env.JWT_SECRET)
     const user = await this.prisma.user.findUnique({
       where: { email },
       select: { id: true, username: true, password: true },
