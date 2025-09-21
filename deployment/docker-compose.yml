@@ -1,0 +1,51 @@
+name: cookbook-app
+
+services:
+  migrate:
+    build: ../services/api
+    command: sh -c "npx prisma migrate dev --name init && npx prisma migrate deploy"
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+      NODE_ENV: production
+    depends_on:
+      - postgres
+  api:
+    build: ../services/api
+    container_name: cookbook-api
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+      NODE_ENV: production
+    ports:
+      - "3000:3000"
+    depends_on:
+      - postgres
+      - redis
+      - elasticsearch
+      - migrate
+  postgres:
+    image: postgres:17.6-alpine3.22
+    environment:
+      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_DB: ${DATABASE_NAME}
+    ports: ["5432:5432"]
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.14.1
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+    ports: ["9200:9200"]
+    volumes: 
+      - esdata:/usr/share/elasticsearch/data"
+
+  redis:
+    image: redis:7
+    ports: ["6379:6379"]
+
+volumes:
+  pgdata:
+  esdata:
