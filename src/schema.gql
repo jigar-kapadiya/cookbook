@@ -1,0 +1,42 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+input CreateUserInput {
+  """Email Id"""
+  email: String!
+
+  """Name"""
+  name: String!
+}
+
+type Mutation {
+  createUser(createUserInput: CreateUserInput!): User!
+  removeUser(id: Int!): User!
+  updateUser(updateUserInput: UpdateUserInput!): User!
+}
+
+type Query {
+  user(id: Int!): User!
+  users: [User!]!
+}
+
+input UpdateUserInput {
+  """Email Id"""
+  email: String
+  id: Int!
+
+  """Name"""
+  name: String
+}
+
+type User {
+  """Email Id"""
+  email: String!
+
+  """Id"""
+  id: Int!
+
+  """Name"""
+  name: String!
+}
