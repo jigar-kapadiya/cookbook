@@ -5,6 +5,7 @@ import { join } from 'path';
 import { UsersModule } from './users/users.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { HealthModule } from './health/health.module';
+import { GraphQLError } from 'graphql';
 
 @Module({
   imports: [
@@ -14,7 +15,7 @@ import { HealthModule } from './health/health.module';
       sortSchema: true,
       playground: true, // in Apollo Server v4 this enables the embedded Sandbox in dev
       csrfPrevention: true, // uncomment for prod
-      formatError: (err) => {
+      formatError: (err: GraphQLError) => {
         const { message, extensions } = err as any;
         const { code, errors } = extensions || {};
         return { message, extensions: { code, errors } };
