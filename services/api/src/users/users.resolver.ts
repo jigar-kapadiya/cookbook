@@ -1,9 +1,12 @@
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
 import { UsersService } from './users.service';
 import { User } from './entities/user.entity';
 import { CreateUserInput } from './dto/create-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
-import { ParseUUIDPipe } from '@nestjs/common';
+import { ParseUUIDPipe, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '../guards/auth.guard';
+import { LoginInput } from './dto/login.input';
+import { Auth } from './entities/auth.entity';
 
 @Resolver(() => User)
 export class UsersResolver {
@@ -19,11 +22,13 @@ export class UsersResolver {
     return this.usersService.findAll();
   }
 
+  @UseGuards(AuthGuard)
   @Query(() => User, { name: 'user' })
   findOne(@Args('id', ParseUUIDPipe) id: string) {
     return this.usersService.findOne(id);
   }
 
+  @UseGuards(AuthGuard)
   @Mutation(() => User)
   updateUser(@Args('updateUserInput') updateUserInput: UpdateUserInput) {
     return this.usersService.update(updateUserInput.id, updateUserInput);
@@ -32,5 +37,10 @@ export class UsersResolver {
   @Mutation(() => User)
   removeUser(@Args('id', ParseUUIDPipe) id: string) {
     return this.usersService.remove(id);
+  }
+
+  @Mutation(() => Auth)
+  login(@Args('authPayload') payload: LoginInput) {
+    return this.usersService.login(payload.email, payload.password)
   }
 }

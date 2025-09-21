@@ -2,6 +2,10 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Auth {
+  idToken: String!
+}
+
 input CreateUserInput {
   """Display Name"""
   displayName: String
@@ -19,8 +23,14 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+input LoginInput {
+  email: String!
+  password: String!
+}
+
 type Mutation {
   createUser(createUserInput: CreateUserInput!): User!
+  login(authPayload: LoginInput!): Auth!
   removeUser(id: String!): User!
   updateUser(updateUserInput: UpdateUserInput!): User!
 }

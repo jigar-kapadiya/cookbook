@@ -1,8 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { CreateUserInput } from './dto/create-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
 import { PrismaService } from '../prisma/prisma.service';
-import { hash } from 'argon2';
+import { hash, verify } from 'argon2';
+import { JwtService } from '@nestjs/jwt'
 
 const userSafeSelect = {
   id: true,
@@ -18,10 +19,10 @@ const userSafeSelect = {
 
 @Injectable()
 export class UsersService {
-  constructor(private readonly prisma: PrismaService) { }
+  constructor(private readonly prisma: PrismaService, private readonly jwt: JwtService) { }
 
   async create(createUserInput: CreateUserInput) {
-    const passwordHash = await hash(createUserInput.password, {  });
+    const passwordHash = await hash(createUserInput.password, {});
     console.log(passwordHash)
     return this.prisma.user.create({ data: { ...createUserInput, password: passwordHash } });
   }
@@ -32,7 +33,7 @@ export class UsersService {
     });
   }
 
-  findOne(id: string) {
+  async findOne(id: string) {
     return this.prisma.user.findFirstOrThrow({ where: { id }, select: userSafeSelect, });
   }
 
@@ -42,5 +43,23 @@ export class UsersService {
 
   remove(id: string) {
     return this.prisma.user.delete({ where: { id } });
+  }
+
+  async login(email: string, password: string) {
+    console.log(process.env.JWT_SECRET)
+    const user = await this.prisma.user.findUnique({
+      where: { email },
+      select: { id: true, username: true, password: true },
+    });
+    if (!user) throw new UnauthorizedException('Invalid credentials');
+
+    const ok = await verify(user.password, password);
+    if (!ok) throw new UnauthorizedException('Invalid credentials');
+
+    // Sign JWT with an object, not a JSON string
+    const payload = { sub: user.id, username: user.username };
+    const token = this.jwt.sign(payload);
+
+    return { idToken: token };
   }
 }
